@@ -35,11 +35,14 @@ $("#animal-div").on("click", ".animal-button", function (event) {
         method: "GET"
     }).done(function (response) {
         console.log(response);
-
+        
+        $("#instructions-div").text("Click on an image below to animate");
+        
         var results = response.data;
 
         for (var j = 0; j < results.length; j++) {
             var gifDiv = $("<div>");
+            gifDiv.attr("class", "gif-div");
             var showRating = $("<p>").text("Rating: " + results[j].rating);
             var imageTag = $("<img>");
             imageTag.attr("src", results[j].images.fixed_height_still.url);
@@ -47,7 +50,7 @@ $("#animal-div").on("click", ".animal-button", function (event) {
             imageTag.attr("data-still", results[j].images.fixed_height_still.url);
             imageTag.attr("data-animate", results[j].images.fixed_height.url)
             imageTag.attr("data-state", "still");
-            gifDiv.append(showRating, imageTag);
+            gifDiv.append(imageTag, showRating);
             $("#animal-gif").append(gifDiv);
         }
     });

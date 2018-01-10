@@ -1,5 +1,5 @@
 // load buttons with animal name
-var animals = ["aardvark", "lemer", "cockatiel", "duck", "otter", "loon", "beaver", "terrier", "gopher"];
+var animals = ["aardvark", "lemur", "cockatiel", "duck", "otter", "beaver", "terrier", "gopher"];
 
 function displayButtons() {
     $("#animal-div").empty();
@@ -23,31 +23,46 @@ $("#add-animal").on("click", function (event) {
 })
 
 // when button is clicked, 10 gifs of that animal apper
-$("#animal-div").on("click", ".animal-button", function(animal){
+$("#animal-div").on("click", ".animal-button", function (event) {
     event.preventDefault();
+    $("#animal-gif").empty();
 
     var animalName = $(this).data("name");
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animalName + "&api_key=5LCGKiln2CYkrYWGgqJS7gbm25PsNcg2&limit=10&rating=pg";
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animalName + "&api_key=5LCGKiln2CYkrYWGgqJS7gbm25PsNcg2&limit=10&rating=pg-13";
 
-$.ajax({
-    url: queryURL,
-    method: "GET"
-  }).done(function(response) {
-    console.log(response);
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).done(function (response) {
+        console.log(response);
 
-    var results = response.data;
+        var results = response.data;
 
-    for (var j = 0; j < results.length; j++) {
+        for (var j = 0; j < results.length; j++) {
+            var gifDiv = $("<div>");
+            var showRating = $("<p>").text("Rating: " + results[j].rating);
+            var imageTag = $("<img>");
+            imageTag.attr("src", results[j].images.fixed_height_still.url);
+            imageTag.attr("class", "gif-image");
+            imageTag.attr("data-still", results[j].images.fixed_height_still.url);
+            imageTag.attr("data-animate", results[j].images.fixed_height.url)
+            imageTag.attr("data-state", "still");
+            gifDiv.append(showRating, imageTag);
+            $("#animal-gif").append(gifDiv);
+        }
+    });
+});
 
-        var gifDiv = $("<div>");
-        var showRating = $("<p>").text("Rating: " + results[j].rating);
-        var imageTag = $("<img>");
-        imageTag.attr("src", results[j].images.fixed_height_still.url);
-
-        gifDiv.append(showRating, imageTag);
-        $("#animal-gif").append(gifDiv);
+// when GIF is clicked, change to still or animate state
+$("div").on("click", ".gif-image", function (event) {
+    var state = $(this).attr("data-state");
+    
+    if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
     }
-
-
-  });
+    else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+    }
 });

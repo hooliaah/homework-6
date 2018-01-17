@@ -15,16 +15,20 @@ displayButtons();
 
 // user can add a new button using search box 
 $("#add-animal").on("click", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
     var newAnimal = $("#animal-input").val().trim();
+    if(newAnimal==""){
+        alert('input please')
+    }else{
     console.log(newAnimal);
     animals.push(newAnimal);
     displayButtons();
+    }
 })
 
 // when button is clicked, 10 gifs of that animal apper
 $("#animal-div").on("click", ".animal-button", function (event) {
-    event.preventDefault();
+    // event.preventDefault();
     $("#animal-gif").empty();
 
     var animalName = $(this).data("name");
